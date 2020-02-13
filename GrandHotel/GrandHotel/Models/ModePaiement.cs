@@ -13,6 +13,6 @@ namespace GrandHotel.Models
         public string Code { get; set; }
         public string Libelle { get; set; }
 
-        public virtual ICollection<Facture> Facture { get; set; }
+        internal virtual ICollection<Facture> Facture { get; set; }
     }
 }

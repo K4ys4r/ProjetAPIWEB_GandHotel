@@ -60,33 +60,30 @@ namespace GrandHotel.Controllers
 
 
 
-        // PUT: api/Factures/5
+        // PUT: Factures/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFacture(int id, Facture facture)
+        public async Task<IActionResult> PutFacture(int id, Facture newFacture)
         {
-            if (id != facture.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(facture).State = EntityState.Modified;
+            var facture = await _context.Facture.FindAsync(id);
+            if (facture == null)
+            {
+                return NotFound("L'Id donné ne correspond pas à aucunes des factures!");
+            }
+            facture.DateFacture = newFacture.DateFacture;
+            facture.CodeModePaiement = newFacture.CodeModePaiement;
+            _context.Entry(facture).Property("DateFacture").IsModified = true;
+            _context.Entry(facture).Property("CodeModePaiement").IsModified = true;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
-                if (!FactureExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest("une erreur est produite en effectuant la mis à jour.\nVerifier le valeurs des date et du codeModePaiement");
             }
 
             return NoContent();
@@ -124,8 +121,7 @@ namespace GrandHotel.Controllers
 
 
 
-
-        // DELETE: api/Factures/5
+/*        // DELETE: api/Factures/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Facture>> DeleteFacture(int id)
         {
@@ -140,7 +136,7 @@ namespace GrandHotel.Controllers
 
             return facture;
         }
-
+*/
         private bool FactureExists(int id)
         {
             return _context.Facture.Any(e => e.Id == id);
