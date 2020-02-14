@@ -1,0 +1,670 @@
+{
+    "version": 2,
+    "data": {
+        "ClientInfos": {
+            "name": "ClientInfos",
+            "tags": [
+                "client"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Clients/1",
+            "headers": [],
+            "body": "",
+            "created_at": "2020-02-14T13:01:38.772Z",
+            "updated_at": "2020-02-14T13:01:38.772Z"
+        },
+        "ClientInfos122": {
+            "name": "ClientInfos122",
+            "tags": [
+                "client"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Clients/122",
+            "headers": [],
+            "body": "",
+            "created_at": "2020-02-14T13:06:33.458Z",
+            "updated_at": "2020-02-14T13:06:33.458Z"
+        },
+        "DeleteClient": {
+            "name": "DeleteClient",
+            "tags": [
+                "client"
+            ],
+            "method": "DELETE",
+            "url": "https://localhost:44305/Clients/1",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:22:26.192Z",
+            "updated_at": "2020-02-14T13:22:26.192Z"
+        },
+        "DeleteClient2602": {
+            "name": "DeleteClient2602",
+            "tags": [
+                "client"
+            ],
+            "method": "DELETE",
+            "url": "https://localhost:44305/Clients/2602",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:23:54.336Z",
+            "updated_at": "2020-02-14T13:23:54.336Z"
+        },
+        "Factures": {
+            "name": "Factures",
+            "tags": [
+                "facture"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Factures",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:33:42.208Z",
+            "updated_at": "2020-02-14T13:33:42.208Z"
+        },
+        "FacturesAdd": {
+            "name": "FacturesAdd",
+            "tags": [
+                "facture"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Factures",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"idClient\": 2603,\n  \"dateFacture\": \"2016-01-31T00:00:00\",\n  \"datePaiement\": \"2016-02-14T00:00:00\",\n  \"codeModePaiement\": \"CB\",\n  \"codeModePaiementNavigation\": null,\n  \"idClientNavigation\": null\n }",
+            "created_at": "2020-02-14T14:08:10.564Z",
+            "updated_at": "2020-02-14T14:08:10.564Z"
+        },
+        "FacturesAddDetails": {
+            "name": "FacturesAddDetails",
+            "tags": [
+                "facture"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Factures/3375",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n      \"quantite\": 1,\n      \"montantHt\": 64,\n      \"tauxTva\": 0.1,\n      \"tauxReduction\": 0.15\n    }",
+            "created_at": "2020-02-14T14:20:29.015Z",
+            "updated_at": "2020-02-14T14:20:29.015Z"
+        },
+        "FacturesAddwithId": {
+            "name": "FacturesAddwithId",
+            "tags": [
+                "facture"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Factures",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n\"id\" : 1,\n  \"idClient\": 2603,\n  \"dateFacture\": \"2016-01-31T00:00:00\",\n  \"datePaiement\": \"2016-02-14T00:00:00\",\n  \"codeModePaiement\": \"CB\",\n  \"codeModePaiementNavigation\": null,\n  \"idClientNavigation\": null\n }",
+            "created_at": "2020-02-14T14:14:29.034Z",
+            "updated_at": "2020-02-14T14:14:29.034Z"
+        },
+        "FacturesId": {
+            "name": "FacturesId",
+            "tags": [
+                "facture"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Factures/1",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:58:33.600Z",
+            "updated_at": "2020-02-14T13:58:33.600Z"
+        },
+        "FacturesIdNotFound": {
+            "name": "FacturesIdNotFound",
+            "tags": [
+                "facture"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Factures/4554646",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:59:20.518Z",
+            "updated_at": "2020-02-14T13:59:20.518Z"
+        },
+        "FacturesNoclient": {
+            "name": "FacturesNoclient",
+            "tags": [
+                "facture"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Factures?date1=2017-06-01",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:38:57.034Z",
+            "updated_at": "2020-02-14T13:38:57.034Z"
+        },
+        "FacturesUpdate": {
+            "name": "FacturesUpdate",
+            "tags": [
+                "facture"
+            ],
+            "method": "PUT",
+            "url": "https://localhost:44305/Factures/3375",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"dateFacture\": \"2017-01-31\",\n  \"datePaiement\": \"2017-02-15\",\n  \"codeModePaiement\": \"CB\"\n}",
+            "created_at": "2020-02-14T14:36:56.834Z",
+            "updated_at": "2020-02-14T14:36:56.834Z"
+        },
+        "FacturesUpdateId": {
+            "name": "FacturesUpdateId",
+            "tags": [
+                "facture"
+            ],
+            "method": "PUT",
+            "url": "https://localhost:44305/Factures/3375",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"id\": 337,\n  \"dateFacture\": \"2016-01-31T00:00:00\",\n  \"datePaiement\": \"2016-02-14T00:00:00\",\n  \"codeModePaiement\": \"CHQ\" \n}",
+            "created_at": "2020-02-14T14:41:19.306Z",
+            "updated_at": "2020-02-14T14:41:19.306Z"
+        },
+        "FacturesUpdatePaiement": {
+            "name": "FacturesUpdatePaiement",
+            "tags": [
+                "facture"
+            ],
+            "method": "PUT",
+            "url": "https://localhost:44305/Factures/3375",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"dateFacture\": \"2016-01-31T00:00:00\",\n  \"datePaiement\": \"2016-02-14T00:00:00\",\n  \"codeModePaiement\": \"CASH\" \n}",
+            "created_at": "2020-02-14T14:41:56.362Z",
+            "updated_at": "2020-02-14T14:41:56.362Z"
+        },
+        "Facturesclient": {
+            "name": "Facturesclient",
+            "tags": [
+                "facture"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Factures?date1=2017-06-01&clientId=1",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:41:05.539Z",
+            "updated_at": "2020-02-14T13:41:05.539Z"
+        },
+        "FacturesclientDates": {
+            "name": "FacturesclientDates",
+            "tags": [
+                "facture"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Factures?date1=2017-06-01&date2=2017-05-01&clientId=1",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T13:41:58.681Z",
+            "updated_at": "2020-02-14T13:41:58.681Z"
+        },
+        "Reservations": {
+            "name": "Reservations",
+            "tags": [
+                "reservation"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Reservations",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T14:48:03.712Z",
+            "updated_at": "2020-02-14T14:48:03.712Z"
+        },
+        "ReservationsAdd": {
+            "name": "ReservationsAdd",
+            "tags": [
+                "reservation"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Reservations?clientid=2603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "  {\n      \"numChambre\": 1,\n      \"jour\": \"2020-01-02\",\n      \"nbPersonnes\": 1,\n      \"heureArrivee\": 17,\n      \"travail\": null,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:28:08.839Z",
+            "updated_at": "2020-02-14T15:28:08.839Z"
+        },
+        "ReservationsAddChambre": {
+            "name": "ReservationsAddChambre",
+            "tags": [
+                "reservation"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Reservations?clientid=2603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "  {\n      \"numChambre\": 1,\n      \"jour\": \"2020-01-02\",\n      \"nbPersonnes\": 1,\n      \"heureArrivee\": 17,\n      \"travail\": null,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:28:51.718Z",
+            "updated_at": "2020-02-14T15:28:51.718Z"
+        },
+        "ReservationsAddNoID": {
+            "name": "ReservationsAddNoID",
+            "tags": [
+                "reservation"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Reservations",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "  {\n      \"numChambre\": 1,\n      \"jour\": \"2014-12-02\",\n      \"nbPersonnes\": 1,\n      \"heureArrivee\": 17,\n      \"travail\": null,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:20:33.921Z",
+            "updated_at": "2020-02-14T15:20:33.921Z"
+        },
+        "ReservationsClient": {
+            "name": "ReservationsClient",
+            "tags": [
+                "reservation"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Reservations/Clients",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T14:54:20.991Z",
+            "updated_at": "2020-02-14T14:54:20.991Z"
+        },
+        "ReservationsClientIdNotExist": {
+            "name": "ReservationsClientIdNotExist",
+            "tags": [
+                "reservation"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Reservations/Clients?id=603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T14:58:14.582Z",
+            "updated_at": "2020-02-14T14:58:14.582Z"
+        },
+        "ReservationsClientList": {
+            "name": "ReservationsClientList",
+            "tags": [
+                "reservation"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Reservations/Clients?id=1",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T14:54:56.974Z",
+            "updated_at": "2020-02-14T14:54:56.974Z"
+        },
+        "ReservationsDelete": {
+            "name": "ReservationsDelete",
+            "tags": [
+                "reservation"
+            ],
+            "method": "DELETE",
+            "url": "https://localhost:44305/Reservations?clientId=2603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n\"numChambre\": 1,\n      \"jour\": \"2020-01-02T00:00:00\"\n}",
+            "created_at": "2020-02-14T15:56:05.777Z",
+            "updated_at": "2020-02-14T15:56:05.777Z"
+        },
+        "ReservationsDeleteId": {
+            "name": "ReservationsDeleteId",
+            "tags": [
+                "reservation"
+            ],
+            "method": "DELETE",
+            "url": "https://localhost:44305/Reservations?clientid=2603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n\"numChambre\": 1,\n      \"jour\": \"2020-01-02T00:00:00\"\n}",
+            "created_at": "2020-02-14T15:57:32.279Z",
+            "updated_at": "2020-02-14T15:57:32.279Z"
+        },
+        "ReservationsDeleteNoId": {
+            "name": "ReservationsDeleteNoId",
+            "tags": [
+                "reservation"
+            ],
+            "method": "DELETE",
+            "url": "https://localhost:44305/Reservations",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n\"numChambre\": 1,\n      \"jour\": \"2020-01-02T00:00:00\"\n}",
+            "created_at": "2020-02-14T15:56:48.792Z",
+            "updated_at": "2020-02-14T15:56:48.792Z"
+        },
+        "ReservationsIDclient": {
+            "name": "ReservationsIDclient",
+            "tags": [
+                "reservation"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Reservations?id=1000",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "  {\n      \"numChambre\": 1,\n      \"jour\": \"2014-12-02\",\n      \"nbPersonnes\": 1,\n      \"heureArrivee\": 17,\n      \"travail\": null,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:21:34.224Z",
+            "updated_at": "2020-02-14T15:21:34.224Z"
+        },
+        "ReservationsListe": {
+            "name": "ReservationsListe",
+            "tags": [
+                "reservation"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Reservations?date=2017-01-01",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T14:48:45.538Z",
+            "updated_at": "2020-02-14T14:48:45.538Z"
+        },
+        "ReservationsListe2": {
+            "name": "ReservationsListe2",
+            "tags": [
+                "reservation"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Reservations?date=2017-03",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "",
+            "created_at": "2020-02-14T14:49:39.304Z",
+            "updated_at": "2020-02-14T14:49:39.304Z"
+        },
+        "ReservationsNoChambre": {
+            "name": "ReservationsNoChambre",
+            "tags": [
+                "reservation"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Reservations?clientid=2603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "  {\n      \"numChambre\": 13,\n      \"jour\": \"2020-01-02\",\n      \"nbPersonnes\": 1,\n      \"heureArrivee\": 17,\n      \"travail\": null,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:29:34.429Z",
+            "updated_at": "2020-02-14T15:29:34.429Z"
+        },
+        "ReservationsPut": {
+            "name": "ReservationsPut",
+            "tags": [
+                "reservation"
+            ],
+            "method": "PUT",
+            "url": "https://localhost:44305/Reservations",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "  {\n      \"numChambre\": 13,\n      \"jour\": \"2020-01-02\",\n      \"nbPersonnes\": 1,\n      \"heureArrivee\": 17,\n      \"travail\": null,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:41:01.422Z",
+            "updated_at": "2020-02-14T15:41:01.422Z"
+        },
+        "ReservationsUpdate": {
+            "name": "ReservationsUpdate",
+            "tags": [
+                "reservation"
+            ],
+            "method": "PUT",
+            "url": "https://localhost:44305/Reservations?clientId=2603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": " {\n      \"numChambre\": 1,\n      \"jour\": \"2020-01-02T00:00:00\",\n      \"nbPersonnes\": 12,\n      \"heureArrivee\": 22,\n      \"travail\": true,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:43:46.529Z",
+            "updated_at": "2020-02-14T15:43:46.529Z"
+        },
+        "ReservationsUpdateFaild": {
+            "name": "ReservationsUpdateFaild",
+            "tags": [
+                "reservation"
+            ],
+            "method": "PUT",
+            "url": "https://localhost:44305/Reservations?clientId=2603",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": " {\n\n\n      \"idClient\": 260,\n      \"nbPersonnes\": 12,\n      \"heureArrivee\": 22,\n      \"travail\": true,\n      \"jourNavigation\": null,\n      \"numChambreNavigation\": null\n    }",
+            "created_at": "2020-02-14T15:47:29.177Z",
+            "updated_at": "2020-02-14T15:47:29.177Z"
+        },
+        "TousLesClients": {
+            "name": "TousLesClients",
+            "tags": [
+                "client"
+            ],
+            "method": "GET",
+            "url": "https://localhost:44305/Clients",
+            "headers": [],
+            "body": "",
+            "created_at": "2020-02-14T12:59:47.312Z",
+            "updated_at": "2020-02-14T12:59:47.312Z"
+        },
+        "addClient": {
+            "name": "addClient",
+            "tags": [
+                "client"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Clients",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"civilite\": \"M\",\n  \"nom\": \"Balout\",\n  \"prenom\": \"Hilal\",\n  \"email\": \"hilal@yahoo.com\",\n  \"carteFidelite\": false,\n  \"societe\": null\n}",
+            "created_at": "2020-02-14T13:09:37.020Z",
+            "updated_at": "2020-02-14T13:09:37.020Z"
+        },
+        "addClientAdress": {
+            "name": "addClientAdress",
+            "tags": [
+                "client"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Clients",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n  \"civilite\": \"M\",\n  \"nom\": \"Toto\",\n  \"prenom\": \"Fofo\",\n  \"email\": \"foto.fofo@yahoo.com\",\n  \"carteFidelite\": false,\n  \"societe\": null,\n  \"adresse\": {\n    \"rue\": \"1 rue des amoureux\",\n    \"complement\": null,\n    \"codePostal\": \"75000\",\n    \"ville\": \"Paris\"\n  }\n}",
+            "created_at": "2020-02-14T13:11:26.714Z",
+            "updated_at": "2020-02-14T13:11:26.714Z"
+        },
+        "addClientPhone": {
+            "name": "addClientPhone",
+            "tags": [
+                "client"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Clients/2602",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n      \"numero\": \"0144285252\",\n      \"codeType\": \"F\",\n      \"pro\": true\n}",
+            "created_at": "2020-02-14T13:13:48.360Z",
+            "updated_at": "2020-02-14T13:13:48.360Z"
+        },
+        "addClientPhone2602": {
+            "name": "addClientPhone2602",
+            "tags": [
+                "client"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Clients/2602",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n      \"numero\": \"0112530855\",\n      \"codeType\": \"F\",\n      \"pro\": true\n}",
+            "created_at": "2020-02-14T13:15:04.112Z",
+            "updated_at": "2020-02-14T13:15:04.112Z"
+        },
+        "addClientPhone2602_2": {
+            "name": "addClientPhone2602_2",
+            "tags": [
+                "client"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Clients/2602",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n      \"numero\": \"0712530855\",\n      \"codeType\": \"F\",\n      \"pro\": true\n}",
+            "created_at": "2020-02-14T13:15:35.504Z",
+            "updated_at": "2020-02-14T13:15:35.504Z"
+        },
+        "addClientPhoneBadRequest": {
+            "name": "addClientPhoneBadRequest",
+            "tags": [
+                "client"
+            ],
+            "method": "POST",
+            "url": "https://localhost:44305/Clients/12222",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "body": "{\n      \"numero\": \"0712530855\",\n      \"codeType\": \"F\",\n      \"pro\": true\n}",
+            "created_at": "2020-02-14T13:17:12.545Z",
+            "updated_at": "2020-02-14T13:17:12.545Z"
+        }
+    }
+}}
