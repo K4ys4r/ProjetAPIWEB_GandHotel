@@ -19,59 +19,65 @@ namespace GrandHotel.Controllers
             _context = context;
         }
 
-        // GET: Reservations
+        // GET: Reservations?date=2017-01-01
         /// <summary>
-        /// Fonction GetReservations permet de recuperer toutes les réservations pour une date donnée.
+        /// Fonction GetReservations permet de récupérer toutes les réservations pour une date donnée.
         /// </summary>
-        /// <param name="date">un DatTime </param>
+        /// <param name="date"> un DateTime </param>
         /// <returns>
-        /// BadRequest si le paramete date n'est pas renseigné
-        /// List<Reservation>
+        /// BadRequest si le paramète date n'est pas renseigné.
+        /// Sinon List<Reservation>.
         /// </returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations([FromQuery] DateTime date)
         {
             if (date == DateTime.MinValue)
-                return BadRequest("Erreur dans le format du parametre date ex:(Facture?date=2017-01-01)");
-            return await _context.Reservation.Where(r => r.Jour == date).ToListAsync();
-        }
+                return BadRequest("Veuillez rajouter une date dans ce format: (Reservations?date=2017-01-01)");
+            
+            var reservations = await _context.Reservation.Where(r => r.Jour == date).ToListAsync();
+            if (!reservations.Any())
+                return NotFound("Aucune réservation trouvée.");
 
+            return reservations;
+        }
+        
+        // PUT: Reservations/Clients?id=5
         /// <summary>
-        /// Fonction GetReservations permet d'avoir la liste des reservation d'un client 
+        /// Fonction GetReservations permet d'avoir la liste des réservations d'un client.
         /// </summary>
-        /// <param name="id">un integre correspond l'id du client</param>
+        /// <param name="id"> Un integer correspondant à l'id du client.</param>
         /// <returns>
-        /// NotFound si le client n'existe pas
-        /// BadRequest si le parametre id n'est pas renseigné
-        /// NotFound si aucune reservation trouvée
-        /// List<Reservation>
+        /// NotFound si le client n'existe pas.
+        /// BadRequest si le paramètre id n'est pas renseigné.
+        /// NotFound si aucune réservation trouvée.
+        /// Sinon List<Reservation>
         /// </returns>
         [HttpGet("Clients")]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations([FromQuery] int id)
         {
             if (id == 0)
-                return BadRequest("Pas d'Id client renseigné");
+                return BadRequest("Pas d'Id client renseigné.");
             
             if (!_context.Client.Any(c => c.Id == id))
-                return NotFound("Le client avec l'id : " + id + " n'est pas enregistré dans notre base de données!");
+                return NotFound("Le client ayant l'id : " + id + " n'est pas enregistré dans notre base de données.");
          
             var reservations =  await _context.Reservation.Where(r => r.IdClient == id).ToListAsync();
             if (!reservations.Any())
-                return NotFound("Aucunes réservations trouvées");
+                return NotFound("Aucune réservation trouvée.");
 
             return reservations;
         }
 
-        // PUT: Reservations?clientId
+        // PUT: Reservations?clientId=5
         /// <summary>
-        /// Fonction PutReservation permet de mettre à jours un reservation
+        /// Fonction PutReservation permet de mettre à jour une reservation.
         /// </summary>
-        /// <param name="clientId">Un integre coresspondant l'id du client</param>
-        /// <param name="reservation">Une instance Reservation</param>
+        /// <param name="clientId"> Un integer correspondant à l'id du client. </param>
+        /// <param name="reservation"> Une instance Reservation. </param>
         /// <returns>
-        /// BadRequest si le parametre id ne pas renseigné
-        /// NotFound si le client n'existe pas 
-        /// NotFound si le client n'a pas reservé la chambre pour une date donnée
+        /// BadRequest si le paramètre id n'est pas renseigné.
+        /// NotFound si le client n'existe pas.
+        /// NotFound si le client n'a pas reservé la chambre pour une date donnée.
         /// Ok si les modifications sont bien faites.
         /// </returns>
         [HttpPut]
@@ -100,7 +106,7 @@ namespace GrandHotel.Controllers
             return Ok("Les changements ont été pris en compte");
         }
 
-        // POST: Reservations?clientId
+        // POST: Reservations?clientId=5
         /// <summary>
         /// Fonction PosteReservation permet de creer une reservation pour un client donné
         /// </summary>
