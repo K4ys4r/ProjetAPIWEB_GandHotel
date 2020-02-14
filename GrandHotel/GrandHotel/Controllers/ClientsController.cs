@@ -39,8 +39,7 @@ namespace GrandHotel.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
-            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Include(c => c.Reservation).Load();
-//            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Load();
+            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Load();
             var client = await _context.Client.FindAsync(id);
             if (client == null)
             {
