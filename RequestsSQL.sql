@@ -80,19 +80,6 @@ having sum((lf.MontantHT*(1-lf.TauxReduction+lf.TauxTVA)*lf.Quantite)) < 5000
 --6.	Code T-SQL pour augmenter à partir du 01/01/2019 les tarifs des chambres de type 1 de 5%, et ceux des chambres de type 2 de 4% par rapport à l'année précédente
 drop procedure if exists EvolutionPrix 
 go
-create procedure EvolutionPrix @taux decimal, @date date
-as
-begin
-insert Tarif (Code,DateDebut,Prix) values (('CHB1-'+convert(nvarchar,year(@date))),(@date),(0))
-
-set @taux = 0.05
-update Tarif set Code='CHB1-'+convert(nvarchar,year(@date)), DateDebut=(@date),Prix=((1+@taux)*Prix)
-insert Tarif (Code,DateDebut,Prix) values (('CHB2-'+convert(nvarchar,year(@date))),(@date),(0))
-
-update Tarif set Code='CHB2-'+convert(nvarchar,year(@date)), DateDebut=(@date),Prix=((1+@taux)*Prix)
-set @taux = 0.04
-end 
-go
 
 create procedure EvolutionPrix @date date, @prix decimal, @type int, @taux decimal
 as
