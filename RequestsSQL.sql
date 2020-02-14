@@ -79,6 +79,7 @@ order by R.Annee,R.Trimestre
 
 --5.	Le nombre de clients dans chaque tranche de 1000 € de chiffre d’affaire total généré. La première tranche est < 5000 €, et la dernière >= 8000 €
 
+
 select R.Tranche_CA, count(R.IdClient) as NbClients -- Regroupement par tranche pour compter le nombre de clients
 from
 	(
@@ -107,27 +108,25 @@ create procedure EvolutionPrix
 as
 begin
 
-declare @type int
 declare @taux as decimal (10,2)
 declare @prix as decimal (10,2)
 declare @date as date
-declare @code_type as varchar = (select Code from Tarif)
+
 -- Insertion dans les tables Tarif et TarifChambre pour les chambres de type 1
-set @type=1
 set @taux = 0.05
-set @prix =(select top(1)Prix*(1.0+@taux) from Tarif where Code like ('CHB'+convert(nvarchar,@type)+'%') order by DateDebut desc) 
-set @date = dateadd(year,1,(select top(1) DateDebut from Tarif where Code like ('CHB'+convert(nvarchar,@type)+'%') order by DateDebut desc)) 
-insert Tarif (Code,DateDebut,Prix) values (('CHB'+convert(nvarchar,@type)+'-'+convert(nvarchar,year(@date))),(@date),(@prix))
+set @prix =(select top(1)Prix*(1.0+@taux) from Tarif where Code like ('CHB1%') order by DateDebut desc) 
+set @date = dateadd(year,1,(select top(1) DateDebut from Tarif where Code like ('CHB1%') order by DateDebut desc)) 
+insert Tarif (Code,DateDebut,Prix) values (('CHB1-'+convert(nvarchar,year(@date))),(@date),(@prix))
 insert TarifChambre select distinct(NumChambre),
-('CHB'+convert(nvarchar,@type)+'-'+convert(nvarchar,year(@date))) from TarifChambre where CodeTarif like ('CHB'+convert(nvarchar,@type)+'%')
+('CHB1-'+convert(nvarchar,year(@date))) from TarifChambre where CodeTarif like ('CHB1%')
+
 -- Insertion dans les tables Tarif et TarifChambre pour les chambres de type 2
-set @type=2
 set @taux = 0.04
-set @prix =(select top(1)Prix*(1.0+@taux) from Tarif where Code like ('CHB'+convert(nvarchar,@type)+'%') order by DateDebut desc) 
-set @date = dateadd(year,1,(select top(1) DateDebut from Tarif where Code like ('CHB'+convert(nvarchar,@type)+'%') order by DateDebut desc)) 
-insert Tarif (Code,DateDebut,Prix) values (('CHB'+convert(nvarchar,@type)+'-'+convert(nvarchar,year(@date))),(@date),(@prix))
+set @prix =(select top(1)Prix*(1.0+@taux) from Tarif where Code like ('CHB2%') order by DateDebut desc) 
+set @date = dateadd(year,1,(select top(1) DateDebut from Tarif where Code like ('CHB2%') order by DateDebut desc)) 
+insert Tarif (Code,DateDebut,Prix) values (('CHB2-'+convert(nvarchar,year(@date))),(@date),(@prix))
 insert TarifChambre select distinct(NumChambre),
-('CHB'+convert(nvarchar,@type)+'-'+convert(nvarchar,year(@date))) from TarifChambre where CodeTarif like ('CHB'+convert(nvarchar,@type)+'%')
+('CHB2-'+convert(nvarchar,year(@date))) from TarifChambre where CodeTarif like ('CHB2%')
 
 end 
 go
