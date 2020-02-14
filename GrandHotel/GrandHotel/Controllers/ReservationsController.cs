@@ -23,113 +23,108 @@ namespace GrandHotel.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation([FromQuery] DateTime date)
         {
-            if (date == DateTime.MinValue) 
+            if (date == DateTime.MinValue)
                 return BadRequest("Erreur dans le format du parametre date ex:(Facture?date=2017-01-01)");
             return await _context.Reservation.Where(r => r.Jour == date).ToListAsync();
         }
         [HttpGet("Clients")]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation([FromQuery] int id)
         {
-            return await _context.Reservation.Where(r => r.IdClient==id).ToListAsync();
+            return await _context.Reservation.Where(r => r.IdClient == id).ToListAsync();
         }
 
-/*        // GET: Reservations/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Reservation>> GetReservation(int id)
-        {
-            var reservation = await _context.Reservation.FindAsync(id);
+        /*        // GET: Reservations/5
+                [HttpGet("{id}")]
+                public async Task<ActionResult<Reservation>> GetReservation(int id)
+                {
+                    var reservation = await _context.Reservation.FindAsync(id);
 
-            if (reservation == null)
-            {
-                return NotFound();
-            }
+                    if (reservation == null)
+                    {
+                        return NotFound();
+                    }
 
-            return reservation;
-        }
-*/
+                    return reservation;
+                }
+        */
 
 
-        // PUT: Reservations/5
+        // PUT: Reservations?clientId
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservation(short id, Reservation reservation)
+        [HttpPut]
+        public async Task<IActionResult> PutReservation([FromQuery] int clientId, Reservation reservation)
         {
-            if (id != reservation.NumChambre)
+            var client = await _context.Client.Include(c => c.Reservation).Where(c => c.Id == clientId).FirstOrDefaultAsync();
+            if (client == null)
             {
-                return BadRequest();
+                return NotFound("Le client avec l'id : " + clientId + " n'est pas enregistré dans notre base de données!");
             }
+            var clientReservation = client.Reservation.Where(r => r.Jour == reservation.Jour && r.NumChambre == reservation.NumChambre).FirstOrDefault();
+            if (clientReservation == null)
+            {
+                return NotFound("Le client n'a pas reservé la chambre " + reservation.NumChambre + " pour la date " + reservation.Jour);
+            }
+            clientReservation.NbPersonnes = reservation.NbPersonnes;
+            clientReservation.HeureArrivee = reservation.HeureArrivee;
+            clientReservation.Travail = reservation.Travail;
+            _context.Entry(clientReservation).State = EntityState.Modified;
 
-            _context.Entry(reservation).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReservationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // POST: api/Reservations
+        // POST: Reservations?clientId
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
+        public async Task<ActionResult<Reservation>> PostReservation([FromQuery] int clientId, Reservation reservation)
         {
-
-            int clientId = reservation.IdClient;
             var client = await _context.Client.Include(c => c.Reservation).Where(c => c.Id == clientId).FirstOrDefaultAsync();
             if (client == null)
             {
-                return NotFound("Le client n'est pas enregistré dans notre base de données!");
+                return NotFound("Le client avec l'id : " + clientId + " n'est pas enregistré dans notre base de données!");
             }
-            // ToDO
+            var chambreReserve = await _context.Reservation.Where(r => r.NumChambre == reservation.NumChambre && r.Jour == reservation.Jour).FirstOrDefaultAsync();
+            if (chambreReserve != null)
+            {
+                return BadRequest("Le chambre " + reservation.NumChambre + " n'est pas disponible pour la date " + reservation.Jour);
+            }
 
+            if (!_context.Calendrier.Any(d => d.Jour == reservation.Jour))
+            {
+                var newDateCalendrier = new Calendrier() { Jour = reservation.Jour };
+                _context.Calendrier.Add(newDateCalendrier);
+            }
+            client.Reservation.Add(reservation);
 
-            _context.Reservation.Add(reservation);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (ReservationExists(reservation.NumChambre))
+                if (!_context.Chambre.Any(c => c.Numero == reservation.NumChambre))
                 {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
+                    return BadRequest("Il y a pas une chambre qui porte le numero " + reservation.NumChambre);
                 }
             }
 
             return CreatedAtAction("GetReservation", new { id = reservation.NumChambre }, reservation);
         }
 
-        // DELETE: api/Reservations/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Reservation>> DeleteReservation(short id)
+        // DELETE: Reservations?clientId
+        [HttpDelete]
+        public async Task<ActionResult<Reservation>> DeleteReservation([FromQuery] int clientId, Reservation reservation)
         {
-            var reservation = await _context.Reservation.FindAsync(id);
-            if (reservation == null)
+            var clientReservation = _context.Reservation.Where(r => r.IdClient == clientId && r.Jour == reservation.Jour && r.NumChambre == reservation.NumChambre).FirstOrDefault();
+            if (clientReservation == null)
             {
-                return NotFound();
+                return NotFound("La reservation n'est pas trouvée!");
             }
-
-            _context.Reservation.Remove(reservation);
+            _context.Reservation.Remove(clientReservation);
             await _context.SaveChangesAsync();
-
             return reservation;
         }
 

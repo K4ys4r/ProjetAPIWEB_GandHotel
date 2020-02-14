@@ -12,6 +12,6 @@ namespace GrandHotel.Models
 
         public DateTime Jour { get; set; }
 
-        public virtual ICollection<Reservation> Reservation { get; set; }
+        internal virtual ICollection<Reservation> Reservation { get; set; }
     }
 }

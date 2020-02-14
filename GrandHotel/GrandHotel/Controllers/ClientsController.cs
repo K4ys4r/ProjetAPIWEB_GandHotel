@@ -19,6 +19,10 @@ namespace GrandHotel.Controllers
         }
 
         // GET: Clients
+        /// <summary>
+        /// Fonction get les informations des clients
+        /// </summary>
+        /// <returns> renvoie une liste de List<Client></Client>s</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Client>>> GetClient()
         {
@@ -26,11 +30,17 @@ namespace GrandHotel.Controllers
         }
 
         // GET: Clients/5
+        /// <summary>
+        /// La fonction prend un seul parametre du Header
+        /// pour avoir les information de Telephone et l'Adresse, un Include a été utilisé
+        /// </summary>
+        /// <param name="id">Un integre qui correspond è l'id du client</param>
+        /// <returns>La fonction renvoie un client avec la liste de numeros de telephones ainsi que son addresse</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
-            _context.Client.Include(c => c.Telephone).Load();
-            _context.Client.Include(c => c.Adresse).Load();
+//            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Include(c => c.Reservation).Load();
+            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Load();
             var client = await _context.Client.FindAsync(id);
             if (client == null)
             {
@@ -39,46 +49,47 @@ namespace GrandHotel.Controllers
             return client;
         }
 
-        // PUT: Clients/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutClient(int id, Telephone tel)
+        // POST: Clients/5
+        /// <summary>
+        /// La fonction PostClient premet de creer un numero de telephone à un client donné
+        /// La fonction prend deux parametres
+        /// </summary>
+        /// <param name="id">integre correspond à l'id du client</param>
+        /// <param name="tel">une instance de Telephone</param>
+        /// <returns>Nocontent si le numero du telephone a été créé. 
+        ///          NotFound si le client n'est pas listé dans la base de données
+        ///          BadRequest si le numero de telephone (sa clé primaire) est déjà utilisé</returns>
+        [HttpPost("{id}")]
+        public async Task<IActionResult> PostClient(int id, Telephone tel)
         {
             if (ClientExists(id))
             {
-                Client client = await _context.Client.FindAsync(id);
-                client.Telephone.Add(tel);
-                _context.Telephone.Add(client.Telephone.FirstOrDefault());
-                await _context.SaveChangesAsync();
+                if (tel.IdClient != id)
+                    tel.IdClient = id;
+                _context.Telephone.Add(tel);
             }
             else
             {
-                return NotFound("L'Id donné ne correspond pas à aucuns de nos clients!");
+                return NotFound("L'Id donné ne correspond pas à aucuns de clients!");
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            
+            catch (DbUpdateException)
+            {
+                return BadRequest("un conflit est produit lors de la mise à jours du à clé primaire qui est déjà utilisée");
             }
             return NoContent();
-            /*            try
-                        {
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            if (!ClientExists(id))
-                            {
-                                return NotFound();
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
-            return NoContent();
-            */
         }
 
         // POST: Clients
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// La fonction PostClient permet de créer un nouveau client et son addresse 
+        /// </summary>
+        /// <param name="client"> un instance Client et sa proprité addresse une instance Adresse</param>
+        /// <returns>renvoie un lien pour le client qui a été crée</returns>
         [HttpPost]
         public async Task<ActionResult<Client>> PostClient(Client client)
         {
@@ -93,6 +104,16 @@ namespace GrandHotel.Controllers
         }
 
         // DELETE: Clients/5
+        /// <summary>
+        /// La fonction DeleteClient permet de supprimer un client, son addresse et sa liste des telephones de la base de données
+        /// si il est pas assosié à des factures ou des reservation
+        /// </summary>
+        /// <param name="id">un integre correspond l'id du client</param>
+        /// <returns>
+        /// la fonction renvoie NotFound si le client n'est pas trouvé
+        /// renvoie BadRequest si le client est associé à des factures ou à des reservations
+        /// renvoie Ok si le client, son addresse et ses telephones  ont été bien supprimés
+        /// </returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Client>> DeleteClient(int id)
         {
@@ -102,7 +123,7 @@ namespace GrandHotel.Controllers
                 return NotFound("L'Id donné ne correspond pas à aucun de nos clients!");
             }
 
-            if (!_context.Facture.Any(c => c.IdClient == client.Id) || !_context.Reservation.Any(r => r.IdClient == client.Id))
+            if (!_context.Facture.Any(c => c.IdClient == client.Id) && !_context.Reservation.Any(r => r.IdClient == client.Id))
             {
                 if (client.Telephone.Any())
                 {

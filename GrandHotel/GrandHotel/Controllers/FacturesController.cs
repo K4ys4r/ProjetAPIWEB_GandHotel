@@ -21,9 +21,19 @@ namespace GrandHotel.Controllers
         }
 
         // GET: Factures
+        /// <summary>
+        /// Fonction GetFactures permet d'avoir la liste des factures à partir d'une date donnée
+        /// Fonction prend trois parametres
+        /// </summary>
+        /// <param name="date1">un DateTime </param>
+        /// <param name="date2">un DateTime </param>
+        /// <param name="clientId">un integre correspondant l'id du client</param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Facture>>> GetFacture([FromQuery] DateTime date1, [FromQuery] DateTime date2, [FromQuery] int client)
+        public async Task<ActionResult<IEnumerable<Facture>>> GetFactures([FromQuery] DateTime date1, [FromQuery] DateTime date2, [FromQuery] int clientId)
         {
+            if (date1 == DateTime.MinValue && date2 == DateTime.MinValue)
+                return BadRequest("Aucune date n'était donné!");
             if (date2 == DateTime.MinValue)
             {
                 date2 = date1;
@@ -35,7 +45,7 @@ namespace GrandHotel.Controllers
                 date1 = date2;
                 date2 = datetemp;
             }
-            var factures = await _context.Facture.Where(f => f.IdClient == client && (f.DateFacture >= date1 && f.DateFacture <= date2)).ToListAsync();
+            var factures = await _context.Facture.Where(f => f.IdClient == clientId && (f.DateFacture >= date1 && f.DateFacture <= date2)).ToListAsync();
 
             if (!factures.Any())
             {

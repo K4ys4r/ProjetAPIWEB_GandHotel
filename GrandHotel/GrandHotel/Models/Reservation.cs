@@ -12,7 +12,7 @@ namespace GrandHotel.Models
         public byte HeureArrivee { get; set; }
         public bool? Travail { get; set; }
 
-        public virtual Client IdClientNavigation { get; set; }
+        internal virtual Client IdClientNavigation { get; set; }
         public virtual Calendrier JourNavigation { get; set; }
         public virtual Chambre NumChambreNavigation { get; set; }
     }
