@@ -20,9 +20,9 @@ namespace GrandHotel.Controllers
 
         // GET: Clients
         /// <summary>
-        /// Fonction get les informations des clients
+        /// Fonction qui affiche les informations des clients
         /// </summary>
-        /// <returns> renvoie une liste de List<Client></Client>s</returns>
+        /// <returns> Renvoie une liste de type List<Client> </returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Client>>> GetClient()
         {
@@ -31,11 +31,11 @@ namespace GrandHotel.Controllers
 
         // GET: Clients/5
         /// <summary>
-        /// La fonction prend un seul parametre du Header
-        /// pour avoir les information de Telephone et l'Adresse, un Include a été utilisé
+        /// La fonction récupère son paramètre dans la route
+        /// pour avoir ses informations. La fonction Include a été utilisé pour récupérer téléphones et adresse.
         /// </summary>
-        /// <param name="id">Un integre qui correspond è l'id du client</param>
-        /// <returns>La fonction renvoie un client avec la liste de numeros de telephones ainsi que son addresse</returns>
+        /// <param name="id"> Un integer qui correspond à l'id du client </param>
+        /// <returns> La fonction renvoie un client avec la liste des numéros de telephone ainsi que son adresse </returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
@@ -51,14 +51,14 @@ namespace GrandHotel.Controllers
 
         // POST: Clients/5
         /// <summary>
-        /// La fonction PostClient premet de creer un numero de telephone à un client donné
-        /// La fonction prend deux parametres
+        /// La fonction PostClient permet de créer un numéro de téléphone pour un client donné.
+        /// La fonction prend deux paramètres: id à partir de la route et le téléphone à partir du corps.
         /// </summary>
-        /// <param name="id">integre correspond à l'id du client</param>
-        /// <param name="tel">une instance de Telephone</param>
-        /// <returns>Nocontent si le numero du telephone a été créé. 
-        ///          NotFound si le client n'est pas listé dans la base de données
-        ///          BadRequest si le numero de telephone (sa clé primaire) est déjà utilisé</returns>
+        /// <param name="id"> Integer correspondant  à l'id du client </param>
+        /// <param name="tel"> Instance de Telephone </param>
+        /// <returns> NoContent si le numéro du téléphone a été créé. 
+        ///           NotFound si le client n'est pas listé dans la base de données.
+        ///           BadRequest si le numero de telephone (sa clé primaire) existe déjà. </returns>
         [HttpPost("{id}")]
         public async Task<IActionResult> PostClient(int id, Telephone tel)
         {
@@ -70,7 +70,7 @@ namespace GrandHotel.Controllers
             }
             else
             {
-                return NotFound("L'Id donné ne correspond pas à aucuns de clients!");
+                return NotFound("L'Id donné ne correspond à aucun de nos clients!");
             }
             try
             {
@@ -79,17 +79,17 @@ namespace GrandHotel.Controllers
             
             catch (DbUpdateException)
             {
-                return BadRequest("un conflit est produit lors de la mise à jours du à clé primaire qui est déjà utilisée");
+                return BadRequest("Un conflit s'est produit lors de la mise à jour de la clé primaire. Celle-ci est déjà utilisée.");
             }
             return NoContent();
         }
 
         // POST: Clients
         /// <summary>
-        /// La fonction PostClient permet de créer un nouveau client et son addresse 
+        /// La fonction PostClient permet de créer un nouveau client avec son adresse. 
         /// </summary>
-        /// <param name="client"> un instance Client et sa proprité addresse une instance Adresse</param>
-        /// <returns>renvoie un lien pour le client qui a été crée</returns>
+        /// <param name="client"> Une instance Client et sa propriété adresse (instance Adresse) </param>
+        /// <returns> Renvoie un lien pour le client qui a été crée </returns>
         [HttpPost]
         public async Task<ActionResult<Client>> PostClient(Client client)
         {
@@ -105,14 +105,14 @@ namespace GrandHotel.Controllers
 
         // DELETE: Clients/5
         /// <summary>
-        /// La fonction DeleteClient permet de supprimer un client, son addresse et sa liste des telephones de la base de données
-        /// si il est pas assosié à des factures ou des reservation
+        /// La fonction DeleteClient permet de supprimer un client, son adresse et sa liste de numéro de téléphone de la base de données
+        /// si celui-ci n'est pas assosié à des factures ou à des reservations
         /// </summary>
-        /// <param name="id">un integre correspond l'id du client</param>
+        /// <param name="id"> Un integer correspondant à l'id du client. </param>
         /// <returns>
-        /// la fonction renvoie NotFound si le client n'est pas trouvé
-        /// renvoie BadRequest si le client est associé à des factures ou à des reservations
-        /// renvoie Ok si le client, son addresse et ses telephones  ont été bien supprimés
+        /// La fonction renvoie NotFound si le client n'est pas trouvé.
+        /// Renvoie BadRequest si le client est associé à des factures ou à des reservations.
+        /// Renvoie Ok si le client, son adresse et ses téléphones ont été bien supprimés.
         /// </returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Client>> DeleteClient(int id)
@@ -120,7 +120,7 @@ namespace GrandHotel.Controllers
             var client = await _context.Client.Include(c => c.Adresse).Include(t => t.Telephone).Where(c => c.Id == id).FirstOrDefaultAsync();
             if (client == null)
             {
-                return NotFound("L'Id donné ne correspond pas à aucun de nos clients!");
+                return NotFound("L'Id donné ne correspond à aucun de nos clients!");
             }
 
             if (!_context.Facture.Any(c => c.IdClient == client.Id) && !_context.Reservation.Any(r => r.IdClient == client.Id))
@@ -137,12 +137,12 @@ namespace GrandHotel.Controllers
             }
             else
             {
-                return BadRequest("Le client ne peut pas être supprimer car il est associé à des factures ou des réservations!");
+                return BadRequest("Le client ne peut pas être supprimé car il est associé à des factures ou des réservations!");
             }
 
             await _context.SaveChangesAsync();
 
-            return Ok("Le client a bien été supprimé");
+            return Ok("Le client a bien été supprimé!");
         }
 
         private bool ClientExists(int id)
