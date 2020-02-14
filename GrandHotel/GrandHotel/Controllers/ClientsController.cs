@@ -39,8 +39,8 @@ namespace GrandHotel.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
-//            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Include(c => c.Reservation).Load();
-            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Load();
+            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Include(c => c.Reservation).Load();
+//            _context.Client.Include(c => c.Telephone).Include(c => c.Adresse).Load();
             var client = await _context.Client.FindAsync(id);
             if (client == null)
             {
@@ -81,7 +81,7 @@ namespace GrandHotel.Controllers
             {
                 return BadRequest("Un conflit s'est produit lors de la mise à jour de la clé primaire. Celle-ci est déjà utilisée.");
             }
-            return NoContent();
+            return Ok("Le numero du telephone a bien été rajouté");
         }
 
         // POST: Clients

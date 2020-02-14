@@ -20,47 +20,72 @@ namespace GrandHotel.Controllers
         }
 
         // GET: Reservations
+        /// <summary>
+        /// Fonction GetReservations permet de recuperer toutes les réservations pour une date donnée.
+        /// </summary>
+        /// <param name="date">un DatTime </param>
+        /// <returns>
+        /// BadRequest si le paramete date n'est pas renseigné
+        /// List<Reservation>
+        /// </returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation([FromQuery] DateTime date)
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations([FromQuery] DateTime date)
         {
             if (date == DateTime.MinValue)
                 return BadRequest("Erreur dans le format du parametre date ex:(Facture?date=2017-01-01)");
             return await _context.Reservation.Where(r => r.Jour == date).ToListAsync();
         }
+
+        /// <summary>
+        /// Fonction GetReservations permet d'avoir la liste des reservation d'un client 
+        /// </summary>
+        /// <param name="id">un integre correspond l'id du client</param>
+        /// <returns>
+        /// NotFound si le client n'existe pas
+        /// BadRequest si le parametre id n'est pas renseigné
+        /// NotFound si aucune reservation trouvée
+        /// List<Reservation>
+        /// </returns>
         [HttpGet("Clients")]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation([FromQuery] int id)
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations([FromQuery] int id)
         {
-            return await _context.Reservation.Where(r => r.IdClient == id).ToListAsync();
+            if (id == 0)
+                return BadRequest("Pas d'Id client renseigné");
+            
+            if (!_context.Client.Any(c => c.Id == id))
+                return NotFound("Le client avec l'id : " + id + " n'est pas enregistré dans notre base de données!");
+         
+            var reservations =  await _context.Reservation.Where(r => r.IdClient == id).ToListAsync();
+            if (!reservations.Any())
+                return NotFound("Aucunes réservations trouvées");
+
+            return reservations;
         }
 
-        /*        // GET: Reservations/5
-                [HttpGet("{id}")]
-                public async Task<ActionResult<Reservation>> GetReservation(int id)
-                {
-                    var reservation = await _context.Reservation.FindAsync(id);
-
-                    if (reservation == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return reservation;
-                }
-        */
-
-
         // PUT: Reservations?clientId
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Fonction PutReservation permet de mettre à jours un reservation
+        /// </summary>
+        /// <param name="clientId">Un integre coresspondant l'id du client</param>
+        /// <param name="reservation">Une instance Reservation</param>
+        /// <returns>
+        /// BadRequest si le parametre id ne pas renseigné
+        /// NotFound si le client n'existe pas 
+        /// NotFound si le client n'a pas reservé la chambre pour une date donnée
+        /// Ok si les modifications sont bien faites.
+        /// </returns>
         [HttpPut]
         public async Task<IActionResult> PutReservation([FromQuery] int clientId, Reservation reservation)
         {
-            var client = await _context.Client.Include(c => c.Reservation).Where(c => c.Id == clientId).FirstOrDefaultAsync();
-            if (client == null)
-            {
+            if (clientId == 0)
+                return BadRequest("Pas d'Id client renseigné");
+            if (reservation.Jour == DateTime.MinValue || reservation.NumChambre == 0)
+                return BadRequest("Le numero du chambre et la date doivent être renseignés");
+      
+            if (!_context.Client.Any(c => c.Id == clientId))
                 return NotFound("Le client avec l'id : " + clientId + " n'est pas enregistré dans notre base de données!");
-            }
-            var clientReservation = client.Reservation.Where(r => r.Jour == reservation.Jour && r.NumChambre == reservation.NumChambre).FirstOrDefault();
+
+            var clientReservation = _context.Reservation.Where(r => r.Jour == reservation.Jour && r.NumChambre == reservation.NumChambre).FirstOrDefault();
             if (clientReservation == null)
             {
                 return NotFound("Le client n'a pas reservé la chambre " + reservation.NumChambre + " pour la date " + reservation.Jour);
@@ -72,32 +97,49 @@ namespace GrandHotel.Controllers
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Les changements ont été pris en compte");
         }
 
         // POST: Reservations?clientId
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Fonction PosteReservation permet de creer une reservation pour un client donné
+        /// </summary>
+        /// <param name="clientId">Un integre coresspondant l'id du client</param>
+        /// <param name="reservation">Une instance Reservation</param>
+        /// <returns>
+        /// BadRequest si le parametre id ne pas renseigné
+        /// NotFound si le client n'existe pas 
+        /// BadRequest si la chambre n'est pas disponible
+        /// BadRequest si le numerode la chambre n'exist pas
+        /// un lien pour la reservation créée
+        /// </returns>
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation([FromQuery] int clientId, Reservation reservation)
         {
-            var client = await _context.Client.Include(c => c.Reservation).Where(c => c.Id == clientId).FirstOrDefaultAsync();
-            if (client == null)
-            {
+            if (clientId == 0)
+                return BadRequest("Pas d'Id client renseigné");
+
+            if (!_context.Client.Any(c => c.Id == clientId))
                 return NotFound("Le client avec l'id : " + clientId + " n'est pas enregistré dans notre base de données!");
-            }
+            
+
             var chambreReserve = await _context.Reservation.Where(r => r.NumChambre == reservation.NumChambre && r.Jour == reservation.Jour).FirstOrDefaultAsync();
             if (chambreReserve != null)
             {
                 return BadRequest("Le chambre " + reservation.NumChambre + " n'est pas disponible pour la date " + reservation.Jour);
             }
 
+            //Si le Jour n'existe pas dans Calendrier on le crée.
             if (!_context.Calendrier.Any(d => d.Jour == reservation.Jour))
             {
                 var newDateCalendrier = new Calendrier() { Jour = reservation.Jour };
                 _context.Calendrier.Add(newDateCalendrier);
             }
-            client.Reservation.Add(reservation);
+
+            if (reservation.IdClient != clientId)
+                reservation.IdClient = clientId;
+
+            _context.Reservation.Add(reservation);
 
             try
             {
@@ -110,14 +152,29 @@ namespace GrandHotel.Controllers
                     return BadRequest("Il y a pas une chambre qui porte le numero " + reservation.NumChambre);
                 }
             }
-
-            return CreatedAtAction("GetReservation", new { id = reservation.NumChambre }, reservation);
+            return CreatedAtAction("GetReservations", new { id = reservation.NumChambre }, reservation);
         }
 
         // DELETE: Reservations?clientId
+        /// <summary>
+        /// Fonction DeleteReservation permet de supprimer une reservation pour un client donné
+        /// </summary>
+        /// <param name="clientId">Un integre coresspondant l'id du client</param>
+        /// <param name="reservation">Une instance Reservation</param>
+        /// <returns>
+        /// BadRequest si le parametre id ne pas renseigné
+        /// NotFound si le client n'existe pas ou la reservation n'est pas trouvée
+        /// Ok si la supprission est faite
+        /// </returns>
         [HttpDelete]
         public async Task<ActionResult<Reservation>> DeleteReservation([FromQuery] int clientId, Reservation reservation)
         {
+            if (clientId == 0)
+                return BadRequest("Pas d'Id client renseigné");
+
+            if (!_context.Client.Any(c => c.Id == clientId))
+                return NotFound("Le client avec l'id : " + clientId + " n'est pas enregistré dans notre base de données!");
+
             var clientReservation = _context.Reservation.Where(r => r.IdClient == clientId && r.Jour == reservation.Jour && r.NumChambre == reservation.NumChambre).FirstOrDefault();
             if (clientReservation == null)
             {
@@ -125,12 +182,8 @@ namespace GrandHotel.Controllers
             }
             _context.Reservation.Remove(clientReservation);
             await _context.SaveChangesAsync();
-            return reservation;
+            return Ok("La reservation a bien été supprimée");
         }
 
-        private bool ReservationExists(short id)
-        {
-            return _context.Reservation.Any(e => e.NumChambre == id);
-        }
     }
 }
