@@ -1,11 +1,10 @@
-﻿using System;
+﻿using GrandHotel.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GrandHotel.Models;
 
 namespace GrandHotel.Controllers
 {
@@ -22,16 +21,16 @@ namespace GrandHotel.Controllers
 
         // GET: Factures
         /// <summary>
-        /// Fonction GetFactures permet d'avoir la liste des factures à partir d'une date donnée
-        /// Fonction prend trois parametres
+        /// Fonction GetFactures permet d'avoir la liste des factures à partir d'une date donnée.
+        /// Prend trois paramètres.
         /// </summary>
         /// <param name="date1">un DateTime </param>
         /// <param name="date2">un DateTime </param>
-        /// <param name="clientId">un integre correspondant l'id du client</param>
+        /// <param name="clientId">un integer correspondant l'id du client</param>
         /// <returns>
-        /// BadRequest si les parametres ne sont pas renseignées
-        /// NotFound si il y a pas des factures trouvées pour le client
-        /// List<Facture> pour le client donné
+        /// BadRequest si les paramètres ne sont pas renseignés.
+        /// NotFound s'il y a pas de facture associée au client.
+        /// Une liste List<Facture> pour le client renseigné.
         /// </returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Facture>>> GetFactures([FromQuery] DateTime date1, [FromQuery] DateTime date2, [FromQuery] int clientId)
@@ -41,14 +40,14 @@ namespace GrandHotel.Controllers
             if (clientId == 0)
                 return BadRequest("Pas d'id client renseigné!");
 
-            //Si le date2 n'est pas donné on fait un an glissant par defaut
+            //Si la date2 n'est pas renseigné, on fait un an glissant par défaut
             if (date2 == DateTime.MinValue)
             {
                 date2 = date1;
                 date1 = date2.AddYears(-1);
             }
-            // Ici on s'arrange que toujours le date2 soit le plus grand pour que la requet de DbSet soit bonne
-            if (date2<date1)
+            // Ici on s'arrange pour que la date2 soit toujours la plus grande pour que la requête de DbSet soit correcte
+            if (date2 < date1)
             {
                 DateTime datetemp = date1;
                 date1 = date2;
@@ -58,20 +57,20 @@ namespace GrandHotel.Controllers
 
             if (!factures.Any())
             {
-                return NotFound("Aucune factures trouvées pour ce client pour les dates renseignées!");
+                return NotFound("Aucune facture trouvée pour ce client aux dates renseignées!");
             }
             return factures;
         }
 
         // GET: Factures/5
         /// <summary>
-        /// La fonction GetFacture permet d'avoir une facture et ses details à partire de son id
-        /// Pour avoir les details (LigneFacture) un Include a été utilisé.
+        /// La fonction GetFacture permet d'avoir une facture et ses détails à partir de son id.
+        /// Pour avoir les détails (LigneFacture) un Include a été utilisé.
         /// </summary>
-        /// <param name="id">Un integre correspondant à l'id du facture</param>
+        /// <param name="id">Un integer correspondant à l'id de la facture.</param>
         /// <returns>
-        /// NotFound si la facture n'existe pas 
-        /// une Facture avec ses detatil LigneFacture
+        /// NotFound si la facture n'existe pas.
+        /// Sinon Une Facture avec ses details (LigneFacture).
         /// </returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Facture>> GetFacture(int id)
@@ -89,22 +88,29 @@ namespace GrandHotel.Controllers
 
         // PUT: Factures/5
         /// <summary>
-        /// Fonction PutFacture permet de mettre à jours les données (DateFacture et CodeMoePaiement) d'une factue donnée.
-        /// elle prend deux parametres
+        /// Fonction PutFacture permet de mettre à jour les données (DateFacture et CodeModePaiement) d'une facture donnée.
+        /// Elle prend deux paramètres.
         /// </summary>
-        /// <param name="id">un integre correspondantt l'id de la facture</param>
-        /// <param name="newFacture">une instance de Facture</param>
-        /// <returns></returns>
+        /// <param name="id">Un integer correspondant à l'id de la facture (de la route).</param>
+        /// <param name="newFacture">Une instance de Facture (du corps).</param>
+        /// <returns>
+        /// BadRequest si l'Id ne correspond pas à la facture. Ou s'il y a une erreur lors de l'enregistrement.
+        /// NotFound si l'Id ne correspond à aucune facture.
+        /// Ok si mise à jour.
+        /// </returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFacture(int id, Facture newFacture)
         {
-            if (newFacture.Id>0 && id != newFacture.Id)
-                return BadRequest("L'Id donné en parametre ne correspond pas à celui de la Facture renseigné");
+            if (!_context.Facture.Any(f => f.Id == id))
+                return NotFound("La facture n'existe pas.");
+
+            if (newFacture.Id > 0 && id != newFacture.Id)
+                return BadRequest("L'Id donné en paramètre ne correspond pas à celui de la facture renseigné.");
 
             var facture = await _context.Facture.FindAsync(id);
             if (facture == null)
             {
-                return NotFound("L'Id donné ne correspond pas à aucunes des factures!");
+                return NotFound("L'Id donné ne correspond pas à aucune des factures!");
             }
             facture.DateFacture = newFacture.DateFacture;
             facture.CodeModePaiement = newFacture.CodeModePaiement;
@@ -117,26 +123,26 @@ namespace GrandHotel.Controllers
             }
             catch (DbUpdateException)
             {
-                return BadRequest("une erreur est produite en effectuant la mis à jour.\nVerifier le valeurs des date et du codeModePaiement");
+                return BadRequest("Une erreur s'est produite lors de la mise à jour.\nVeuillez vérifier les valeurs de date et codeModePaiement");
             }
 
-            return Ok("Mise à jour est bien terminée");
+            return Ok("La mise à jour a bien été effectuée.");
         }
 
         // POST: Factures
         /// <summary>
-        /// Fonction PostFacture permet de créer une nouvelle facteur 
+        /// Fonction PostFacture permet de créer une nouvelle facture. 
         /// </summary>
-        /// <param name="facture"> une instance de Facture</param>
+        /// <param name="facture"> Une instance de Facture. </param>
         /// <returns>
-        /// Lien pour la facture crée
-        /// BadRequest si l'id de la facture est donnée car il est autoincrementé
+        /// Lien de la facture créee.
+        /// BadRequest si l'id de la facture est donnée car il est auto-incrementé.
         /// </returns>
         [HttpPost]
         public async Task<ActionResult<Facture>> PostFacture(Facture facture)
         {
             if (facture.Id > 0)
-                return BadRequest("L'id de la facture est autoincrementé donc ce n'est pas indispensable");
+                return BadRequest("L'id de la facture est auto-incrementé donc ce n'est pas indispensable.");
             _context.Facture.Add(facture);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetFacture", new { id = facture.Id }, facture);
@@ -145,27 +151,27 @@ namespace GrandHotel.Controllers
         /// <summary>
         /// La fonction PostLigneFacture permet de rajouter une ligneFacture pour une Facture
         /// </summary>
-        /// <param name="id">un integre coresspondant l'id de la facture</param>
-        /// <param name="lignefacture">une instance LigneFacture</param>
+        /// <param name="id"> Un integer correspondant à l'id de la facture. (route) </param>
+        /// <param name="lignefacture"> Une instance LigneFacture. (corps) </param>
         /// <returns>
-        /// NotFound si la facture n'exist pas 
-        /// Ok si la ligneFacture est a bien été rajouté.
+        /// NotFound si la facture n'existe pas.
+        /// Ok si la ligneFacture a bien été rajouté.
         /// </returns>
         [HttpPost("{id}")]
         public async Task<ActionResult<Facture>> PostLigneFacture(int id, LigneFacture lignefacture)
         {
 
-            var facture = await _context.Facture.Include(f => f.LigneFacture).Where(f =>f.Id == id).FirstOrDefaultAsync();
+            var facture = await _context.Facture.Include(f => f.LigneFacture).Where(f => f.Id == id).FirstOrDefaultAsync();
 
             if (facture == null)
-                return NotFound("L'Id donné ne correspond pas à aucunes des factures!");
-          
-            //Ici on recupere la derniere valeur de la clé primer de la ligneFacture pour la facture
-            //Car il n'est pas autoincrementé.
-            // et on l'increment de 1.
+                return NotFound("L'Id donné ne correspond pas à aucune des factures!");
+
+            /*Ici on récupère la dernière valeur de la clé primaire de la ligneFacture pour la facture.
+            car il n'est pas autoincrementé.
+            et on l'incrémente de 1.*/
             if (facture.LigneFacture.Any())
             {
-                lignefacture.NumLigne = facture.LigneFacture.LastOrDefault().NumLigne+1;
+                lignefacture.NumLigne = facture.LigneFacture.LastOrDefault().NumLigne + 1;
             }
             else
             {
@@ -173,7 +179,7 @@ namespace GrandHotel.Controllers
             }
             facture.LigneFacture.Add(lignefacture);
             await _context.SaveChangesAsync();
-            return Ok("La ligneFacture est bien rajouté!");
+            return Ok("La ligneFacture a bien été rajouté!");
         }
 
     }
